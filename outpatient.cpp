@@ -13,6 +13,8 @@ outpatient::outpatient(QWidget *parent) :
     ui->submit_date->hide();
     ui->submit_booking->hide();
     ui->doctor_label->hide();
+    connect_db();
+
 }
 
 outpatient::~outpatient()
@@ -24,12 +26,6 @@ void outpatient::connect_db(){
     db.setDatabaseName("Driver={SQL Server};Server=.\\SQLEXPRESS;Database=salamtak;Trusted_Connection=Yes;");
     db.open();
 }
-
-void outpatient::on_back_clicked()
-{
-
-}
-
 
 void outpatient::on_submit_spe_clicked()
 {
@@ -67,7 +63,6 @@ void outpatient::on_reset_clicked()
 
 void outpatient::on_submit_date_clicked()
 {
-    connect_db();
     QString id, firstname, lastname;
     int price;
     date = ui->calendarWidget->selectedDate().toString("yyyy-MM-dd");
@@ -92,13 +87,11 @@ void outpatient::on_submit_date_clicked()
     ui->submit_booking->show();
     ui->calendarWidget->setDisabled(true);
     ui->submit_date->setDisabled(true);
-    db.close();
 }
 
 
 void outpatient::on_submit_booking_clicked()
 {
-    connect_db();
     doctor = doctors_ids[ui->doctors->currentIndex()];
     query.exec(QString("select national_id from patient_info where email='%1'").arg(email));
     query.next();
@@ -106,6 +99,5 @@ void outpatient::on_submit_booking_clicked()
     query.exec(QString("insert into visits values('%1', '%2', '%3', 'true')").arg(doctor).arg(patient).arg(date));
     query.exec(QString("UPDATE doctor_working_days SET available ='0' WHERE TheDate = '%1'").arg(date));
     on_reset_clicked();
-    db.close();
 }
 
