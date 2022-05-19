@@ -21,6 +21,8 @@ public:
 private slots:
     void connect_db();
 
+    void show_visits();
+
     void on_submit_spe_clicked();
 
     void on_reset_clicked();
@@ -36,7 +38,6 @@ private:
     QSqlQuery query;
     QVector<QString> doctors_ids;
     QSqlQueryModel* model;
-    QSqlQuery* ptrQuery;
 };
 
 #endif // OUTPATIENT_H

@@ -2,6 +2,7 @@
 #include "ui_outpatient.h"
 #include <QVector>
 #include <QDebug>
+#include <QTimer>
 outpatient::outpatient(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::outpatient)
@@ -13,15 +14,7 @@ outpatient::outpatient(QWidget *parent) :
     ui->submit_date->hide();
     ui->submit_booking->hide();
     ui->doctor_label->hide();
-    connect_db();
-    query.exec(QString("select national_id from patient_info where email='%1'").arg(email));
-    query.next();
-    patient_id = query.value(0).toString();
-    query.prepare(QString("select Department, Doctor_name, TheDate from visits where (patient_id='%1' and isCurrent = '1')").arg(patient_id));
-    query.exec();
-    model = new QSqlQueryModel();
-    model->setQuery(query);
-    ui->tableView->setModel(model);
+    QTimer::singleShot( 0, this, SLOT( show_visits() ) );
 
 }
 
@@ -35,6 +28,17 @@ void outpatient::connect_db(){
     db.open();
 }
 
+void outpatient::show_visits(){
+    connect_db();
+    query.exec(QString("select national_id from patient_info where email='%1'").arg(email));
+    query.next();
+    patient_id = query.value(0).toString();
+    query.prepare(QString("select Department, Doctor_name, TheDate from visits where (patient_id='%1' and isCurrent = '1')").arg(patient_id));
+    query.exec();
+    model = new QSqlQueryModel();
+    model->setQuery(query);
+    ui->tableView->setModel(model);
+}
 void outpatient::on_submit_spe_clicked()
 {
     speciality = ui->specialities->currentText();
@@ -64,9 +68,6 @@ void outpatient::on_reset_clicked()
     doctor_id= "";
     date="";
 }
-
-
-
 
 
 void outpatient::on_submit_date_clicked()
@@ -110,9 +111,10 @@ void outpatient::on_submit_booking_clicked()
     query.exec(QString("insert into visits values('%1', '%2', '%3', 'true', '%4', '%5')").arg(doctor_id).arg(patient_id).arg(date).arg(speciality).arg(doctor_name));
     query.exec(QString("UPDATE doctor_working_days SET available ='0' WHERE TheDate = '%1'").arg(date));
     on_reset_clicked();
-    query.prepare(QString("select Department, Doctor_name, TheDate from visits where (patient_id='%1' and isCurrent = '1')").arg(patient_id));
-    query.exec();
-    model->setQuery(query);
-    ui->tableView->setModel(model);
+//    query.prepare(QString("select Department, Doctor_name, TheDate from visits where (patient_id='%1' and isCurrent = '1')").arg(patient_id));
+//    query.exec();
+//    model->setQuery(query);
+//    ui->tableView->setModel(model);
+    show_visits();
 }
 
