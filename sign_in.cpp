@@ -39,6 +39,7 @@ void sign_in::on_sign_in_2_clicked()
                 db.close();
                 service_window = new service_choice();
                 this->hide();
+                service_window->patient_email = ui->email->text();
                 service_window->show();
                 return;
             }else{

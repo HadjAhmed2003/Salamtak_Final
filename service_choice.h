@@ -13,6 +13,7 @@ class service_choice : public QWidget
 public:
     explicit service_choice(QWidget *parent = nullptr);
     ~service_choice();
+    QString patient_email;
 
 private slots:
     void on_outpatient_button_clicked();
@@ -20,6 +21,7 @@ private slots:
 private:
     Ui::service_choice *ui;
     outpatient* outpatient_window;
+
 };
 
 #endif // SERVICE_CHOICE_H

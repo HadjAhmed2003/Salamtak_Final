@@ -17,9 +17,17 @@ doctor_sign_up::doctor_sign_up(QWidget *parent) :
     days_check_box[4]->setText("Thursday");
     days_check_box[5]->setText("Friday");
     days_check_box[6]->setText("Saturday");
+    ui->specialization->addItem("Allergy and immunology");
+    ui->specialization->addItem("Rheumatology");
+    ui->specialization->addItem("Gynecology");
+    ui->specialization->addItem("Ophthalmology");
+    ui->specialization->addItem("Pediatrics");
+    ui->specialization->addItem("Urology");
     ui->specialization->addItem("Dermatology");
-    ui->specialization->addItem("Neurology");
     ui->specialization->addItem("Pathology");
+    ui->specialization->addItem("Cardiology");
+    ui->specialization->addItem("Neurology");
+
     ui->price->setValidator( new QIntValidator(0, 100, this) );
     QScrollArea* scrollArea = new QScrollArea(ui->days);
     scrollArea->setWidgetResizable(true);

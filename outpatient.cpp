@@ -71,8 +71,7 @@ void outpatient::on_submit_date_clicked()
     QString id, firstname, lastname;
     int price;
     date = ui->calendarWidget->selectedDate().toString("yyyy-MM-dd");
-    QVector<QString> doctors_ids;
-    query.exec(QString("select national_id from doctor_working_days where TheDate='%1'").arg(date));
+    query.exec(QString("select national_id from doctor_working_days where (TheDate='%1' AND available = '1')").arg(date));
     qDebug()<<query.lastQuery();
     while(query.next()){
         id = query.value(0).toString();
@@ -93,6 +92,20 @@ void outpatient::on_submit_date_clicked()
     ui->submit_booking->show();
     ui->calendarWidget->setDisabled(true);
     ui->submit_date->setDisabled(true);
+    db.close();
+}
+
+
+void outpatient::on_submit_booking_clicked()
+{
+    connect_db();
+    doctor = doctors_ids[ui->doctors->currentIndex()];
+    query.exec(QString("select national_id from patient_info where email='%1'").arg(email));
+    query.next();
+    patient = query.value(0).toString();
+    query.exec(QString("insert into visits values('%1', '%2', '%3', 'true')").arg(doctor).arg(patient).arg(date));
+    query.exec(QString("UPDATE doctor_working_days SET available ='0' WHERE TheDate = '%1'").arg(date));
+    on_reset_clicked();
     db.close();
 }
 

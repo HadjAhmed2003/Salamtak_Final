@@ -17,6 +17,7 @@ void service_choice::on_outpatient_button_clicked()
 {
     outpatient_window = new outpatient();
     this->hide();
+    outpatient_window->email = patient_email;
     outpatient_window->show();
 }
 
