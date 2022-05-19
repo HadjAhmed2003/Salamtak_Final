@@ -81,21 +81,23 @@ void outpatient::on_submit_date_clicked()
         id = query.value(0).toString();
         doctors_ids.push_back(id);
     }
-    for(int j=0; j<doctors_ids.size();j++){
-        qDebug()<<doctors_ids[j];
+    if(doctors_ids.size()<1){
+        ui->validation->setText("No available doctors in this date");
+        return;
+    }else{
+        for(int i=0; i<doctors_ids.size();i++){
+            query.exec(QString("select first_name, last_name, price from doctors_info where (national_id='%1' AND specialization = '%2')").arg(doctors_ids[i]).arg(speciality));
+            query.next();
+            firstname = query.value(0).toString();
+            lastname = query.value(1).toString();
+            price = query.value(2).toInt();
+            ui->doctors->addItem(QString("%1 %2 %3").arg(firstname).arg(lastname).arg(price));
+        }
+        ui->doctors->show();
+        ui->submit_booking->show();
+        ui->calendarWidget->setDisabled(true);
+        ui->submit_date->setDisabled(true);
     }
-    for(int i=0; i<doctors_ids.size();i++){
-        query.exec(QString("select first_name, last_name, price from doctors_info where (national_id='%1' AND specialization = '%2')").arg(doctors_ids[i]).arg(speciality));
-        query.next();
-        firstname = query.value(0).toString();
-        lastname = query.value(1).toString();
-        price = query.value(2).toInt();
-        ui->doctors->addItem(QString("%1 %2 %3").arg(firstname).arg(lastname).arg(price));
-    }
-    ui->doctors->show();
-    ui->submit_booking->show();
-    ui->calendarWidget->setDisabled(true);
-    ui->submit_date->setDisabled(true);
 }
 
 
@@ -111,10 +113,6 @@ void outpatient::on_submit_booking_clicked()
     query.exec(QString("insert into visits values('%1', '%2', '%3', 'true', '%4', '%5')").arg(doctor_id).arg(patient_id).arg(date).arg(speciality).arg(doctor_name));
     query.exec(QString("UPDATE doctor_working_days SET available ='0' WHERE TheDate = '%1'").arg(date));
     on_reset_clicked();
-//    query.prepare(QString("select Department, Doctor_name, TheDate from visits where (patient_id='%1' and isCurrent = '1')").arg(patient_id));
-//    query.exec();
-//    model->setQuery(query);
-//    ui->tableView->setModel(model);
     show_visits();
 }
 
