@@ -4,6 +4,7 @@
 #include <QSqlQuery>
 #include <QWidget>
 #include <QVector>
+#include <QSqlQueryModel>
 namespace Ui {
 class outpatient;
 }
@@ -20,8 +21,6 @@ public:
 private slots:
     void connect_db();
 
-    void on_back_clicked();
-
     void on_submit_spe_clicked();
 
     void on_reset_clicked();
@@ -32,10 +31,12 @@ private slots:
 
 private:
     Ui::outpatient *ui;
-    QString speciality, doctor, date, patient;
+    QString speciality, doctor_id, date, patient_id, department, doctor_name;
     QSqlDatabase db = QSqlDatabase::addDatabase("QODBC");
     QSqlQuery query;
     QVector<QString> doctors_ids;
+    QSqlQueryModel* model;
+    QSqlQuery* ptrQuery;
 };
 
 #endif // OUTPATIENT_H

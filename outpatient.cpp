@@ -14,6 +14,14 @@ outpatient::outpatient(QWidget *parent) :
     ui->submit_booking->hide();
     ui->doctor_label->hide();
     connect_db();
+    query.exec(QString("select national_id from patient_info where email='%1'").arg(email));
+    query.next();
+    patient_id = query.value(0).toString();
+    query.prepare(QString("select Department, Doctor_name, TheDate from visits where (patient_id='%1' and isCurrent = '1')").arg(patient_id));
+    query.exec();
+    model = new QSqlQueryModel();
+    model->setQuery(query);
+    ui->tableView->setModel(model);
 
 }
 
@@ -53,7 +61,7 @@ void outpatient::on_reset_clicked()
     ui->submit_date->setEnabled(true);
     ui->doctor_label->hide();
     speciality="";
-    doctor= "";
+    doctor_id= "";
     date="";
 }
 
@@ -92,12 +100,19 @@ void outpatient::on_submit_date_clicked()
 
 void outpatient::on_submit_booking_clicked()
 {
-    doctor = doctors_ids[ui->doctors->currentIndex()];
+    doctor_id = doctors_ids[ui->doctors->currentIndex()];
     query.exec(QString("select national_id from patient_info where email='%1'").arg(email));
     query.next();
-    patient = query.value(0).toString();
-    query.exec(QString("insert into visits values('%1', '%2', '%3', 'true')").arg(doctor).arg(patient).arg(date));
+    patient_id = query.value(0).toString();
+    query.exec(QString("select first_name from doctors_info where national_id='%1'").arg(doctor_id));
+    query.next();
+    doctor_name = query.value(0).toString();
+    query.exec(QString("insert into visits values('%1', '%2', '%3', 'true', '%4', '%5')").arg(doctor_id).arg(patient_id).arg(date).arg(speciality).arg(doctor_name));
     query.exec(QString("UPDATE doctor_working_days SET available ='0' WHERE TheDate = '%1'").arg(date));
     on_reset_clicked();
+    query.prepare(QString("select Department, Doctor_name, TheDate from visits where (patient_id='%1' and isCurrent = '1')").arg(patient_id));
+    query.exec();
+    model->setQuery(query);
+    ui->tableView->setModel(model);
 }
 
