@@ -38,6 +38,19 @@
         </rect>
        </property>
       </widget>
+      <widget class="QLabel" name="validation">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>280</y>
+         <width>261</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>TextLabel</string>
+       </property>
+      </widget>
      </widget>
     </item>
     <item>
@@ -51,7 +64,7 @@
          <x>10</x>
          <y>30</y>
          <width>311</width>
-         <height>51</height>
+         <height>58</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout_2">

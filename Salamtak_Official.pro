@@ -14,29 +14,35 @@ CONFIG += c++17
 
 SOURCES += \
     doctor_sign_up.cpp \
+    finance.cpp \
     main.cpp \
     mainwindow.cpp \
     mapwindow.cpp \
     outpatient.cpp \
     patient_sign_up.cpp \
+    payment.cpp \
     service_choice.cpp \
     sign_in.cpp
 
 HEADERS += \
     doctor_sign_up.h \
+    finance.h \
     mainwindow.h \
     mapwindow.h \
     outpatient.h \
     patient_sign_up.h \
+    payment.h \
     service_choice.h \
     sign_in.h
 
 FORMS += \
     doctor_sign_up.ui \
+    finance.ui \
     mainwindow.ui \
     mapwindow.ui \
     outpatient.ui \
     patient_sign_up.ui \
+    payment.ui \
     service_choice.ui \
     sign_in.ui
 

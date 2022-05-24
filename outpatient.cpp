@@ -38,6 +38,7 @@ void outpatient::show_visits(){
     model = new QSqlQueryModel();
     model->setQuery(query);
     ui->tableView->setModel(model);
+    qDebug()<<"table is set up";
 }
 void outpatient::on_submit_spe_clicked()
 {
@@ -66,15 +67,17 @@ void outpatient::on_reset_clicked()
     ui->doctor_label->hide();
     speciality="";
     doctor_id= "";
-    date="";
+    //dont' reset the date because it will be passed to the payment window
+    //date="";
 }
 
 
 void outpatient::on_submit_date_clicked()
 {
-    QString id, firstname, lastname;
-    int price;
+    connect_db();
+    QString id;
     date = ui->calendarWidget->selectedDate().toString("yyyy-MM-dd");
+    qDebug()<<"(from submit date button)date: "<<date;
     query.exec(QString("select national_id from doctor_working_days where (TheDate='%1' AND available = '1')").arg(date));
     qDebug()<<query.lastQuery();
     while(query.next()){
@@ -98,11 +101,13 @@ void outpatient::on_submit_date_clicked()
         ui->calendarWidget->setDisabled(true);
         ui->submit_date->setDisabled(true);
     }
+
 }
 
 
 void outpatient::on_submit_booking_clicked()
 {
+    qDebug()<<"(from submit booking button): date = "<<date;
     doctor_id = doctors_ids[ui->doctors->currentIndex()];
     query.exec(QString("select national_id from patient_info where email='%1'").arg(email));
     query.next();
@@ -114,5 +119,17 @@ void outpatient::on_submit_booking_clicked()
     query.exec(QString("UPDATE doctor_working_days SET available ='0' WHERE TheDate = '%1'").arg(date));
     on_reset_clicked();
     show_visits();
+
+    //open payment window and pass to it the price of the chosen doctor, name first and last, the date chosen date
+    if(firstname != ""){
+        QString full_name = firstname + " " + lastname;
+        qDebug()<<"testing the passed parameteres to the payment window";
+        qDebug()<<"price: "<<price<<", full name: "<<lastname + " " + firstname<<", date: "<<date;
+        pay_window = new payment(full_name, price, date);
+        pay_window->show();
+    }else{
+        qDebug()<<"no first name for the doctor";
+    }
+
 }
 

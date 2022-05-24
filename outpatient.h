@@ -3,6 +3,7 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QWidget>
+#include "payment.h"
 #include <QVector>
 #include <QSqlQueryModel>
 namespace Ui {
@@ -36,6 +37,9 @@ private:
     QString speciality, doctor_id, date, patient_id, department, doctor_name;
     QSqlDatabase db = QSqlDatabase::addDatabase("QODBC");
     QSqlQuery query;
+    payment* pay_window;
+    QString firstname = "", lastname;
+    int price;
     QVector<QString> doctors_ids;
     QSqlQueryModel* model;
 };
