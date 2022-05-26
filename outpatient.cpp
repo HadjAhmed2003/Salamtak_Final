@@ -77,7 +77,6 @@ void outpatient::on_submit_date_clicked()
     connect_db();
     QString id;
     date = ui->calendarWidget->selectedDate().toString("yyyy-MM-dd");
-    qDebug()<<"(from submit date button)date: "<<date;
     query.exec(QString("select national_id from doctor_working_days where (TheDate='%1' AND available = '1')").arg(date));
     qDebug()<<query.lastQuery();
     while(query.next()){
@@ -116,7 +115,7 @@ void outpatient::on_submit_booking_clicked()
     query.next();
     doctor_name = query.value(0).toString();
     query.exec(QString("insert into visits values('%1', '%2', '%3', 'true', '%4', '%5')").arg(doctor_id).arg(patient_id).arg(date).arg(speciality).arg(doctor_name));
-    query.exec(QString("UPDATE doctor_working_days SET available ='0' WHERE TheDate = '%1'").arg(date));
+    query.exec(QString("UPDATE doctor_working_days SET available ='0' WHERE TheDate = '%1' AND national_id = %2").arg(date).arg(doctor_id));
     on_reset_clicked();
     show_visits();
 

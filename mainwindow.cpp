@@ -36,7 +36,13 @@ void MainWindow::on_sign_in_clicked()
 {
     if((ui->patient->isChecked())||(ui->doctor->isChecked())||((ui->receptionist->isChecked()))){
         if(ui->patient->isChecked()){
-            sign_in_window = new sign_in();
+            sign_in_window = new sign_in("patient");
+            this->hide();
+            sign_in_window->patient = true;
+            sign_in_window->show();
+        }
+        if(ui->doctor->isChecked()){
+            sign_in_window = new sign_in("doctors"); //it's written doctors because in the db a table is called doctors_info and we use this parameter to determine which table by adding _info
             this->hide();
             sign_in_window->patient = true;
             sign_in_window->show();
